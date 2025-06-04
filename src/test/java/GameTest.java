@@ -53,15 +53,39 @@ class GameTest {
     }
 
     @Test
-    void returnSolvedResultIf2Strikes() {
+    void returnSolvedResultIf2StrikesCase1() {
         generateQuestion("123");
         assertMatchedNumber(game.guess("126"), false, 2, 0);
     }
 
     @Test
-    void returnSolvedResultIf1Strikes2Balls() {
+    void returnSolvedResultIf2StrikesCase2() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("423"), false, 2, 0);
+    }
+
+    @Test
+    void returnSolvedResultIf2StrikesCase3() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("173"), false, 2, 0);
+    }
+
+    @Test
+    void returnSolvedResultIf1Strikes2BallsCase1() {
         generateQuestion("123");
         assertMatchedNumber(game.guess("321"), false, 1, 2);
+    }
+
+    @Test
+    void returnSolvedResultIf1Strikes2BallsCase2() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("132"), false, 1, 2);
+    }
+
+    @Test
+    void returnSolvedResultIf1Strikes2BallsCase3() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("213"), false, 1, 2);
     }
 
     private void assertMatchedNumber(GuessResult result, boolean solved, int strikes, int balls) {
