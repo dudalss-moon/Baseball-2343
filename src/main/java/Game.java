@@ -3,72 +3,68 @@ public class Game {
 
     public GuessResult guess(String guessNumber) {
         assertIllegalArgument(guessNumber);
+
         if (guessNumber.equals(question)) {
-            return new GuessResult(true, 3, 0);
-        } else {
-            int strikeCount = getStrikeCount(guessNumber);
-            int result = getBallCount(guessNumber);
-            return new GuessResult(false, strikeCount, result);
+            return getCorrectResponse();
         }
+
+        return getWrongResponse(guessNumber);
     }
 
-    private int getBallCount(String guessNumber) {
-        int ballCount = 0;
-        for (int index = 0; index < 3; index++) {
-            if (guessNumber.charAt(index) == question.charAt(index)) {
-                continue;
-            }
-            for (int i = 0; i < 3; i++) {
-                if (guessNumber.charAt(i) == question.charAt(index)) {
-                    ballCount++;
-                }
-            }
-        }
-        return ballCount;
+    private GuessResult getCorrectResponse() {
+        return new GuessResult(true, 3, 0);
+    }
+
+    private GuessResult getWrongResponse(String guessNumber) {
+        int strikeCount = getStrikeCount(guessNumber);
+        int ballCount = getBallCount(guessNumber);
+        return new GuessResult(false, strikeCount, ballCount);
     }
 
     private int getStrikeCount(String guessNumber) {
-        int strikeCount = 0;
-        for (int index = 0; index < 3; index++) {
-            if (guessNumber.charAt(index) == question.charAt(index)) {
-                strikeCount++;
+        int result = 0;
+        for (int index = 0 ; index < 3; index++) {
+            if (guessNumber.charAt(index) != question.charAt(index)) continue;
+            result++;
+        }
+        return result;
+    }
+
+    private int getBallCount(String guessNumber) {
+        int result = 0;
+        for (int guessIndex = 0 ; guessIndex < 3; guessIndex++) {
+            for (int answerIndex = 0; answerIndex < 3; answerIndex++) {
+                if (guessIndex == answerIndex) continue;
+                if (guessNumber.charAt(answerIndex) != question.charAt(guessIndex)) continue;
+                result++;
             }
         }
-        return strikeCount;
+        return result;
     }
 
-    private boolean is1Strike(String guessNumber, int index) {
-        return guessNumber.charAt(index) == question.charAt(index);
+    private static void assertIllegalArgument(String guessNumber) {
+        if (isEmptyAnswer(guessNumber)) throw new IllegalArgumentException();
+        if (!isValidLength(guessNumber)) throw new IllegalArgumentException();
+        if (isIncludeCharector(guessNumber)) throw new IllegalArgumentException();
+        if (isDuplicatedNumber(guessNumber)) throw new IllegalArgumentException();
     }
 
-    private void assertIllegalArgument(String guessNumber) {
-        if (guessNumber == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (guessNumber.length() != 3) {
-            throw new IllegalArgumentException();
-        }
-
-        if (isIncludeCharacter(guessNumber)) {
-            throw new IllegalArgumentException();
-        }
-
-        if (isDuplicatedNumber(guessNumber)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private boolean isIncludeCharacter(String guessNumber) {
+    private static boolean isIncludeCharector(String guessNumber) {
         for (char number : guessNumber.toCharArray()) {
-            if (number < '0' || number > '9') {
-                return true;
-            }
+            if (number < '0' || number > '9') return true;
         }
         return false;
     }
 
-    private boolean isDuplicatedNumber(String guessNumber) {
+    private static boolean isValidLength(String guessNumber) {
+        return guessNumber.length() == 3;
+    }
+
+    private static boolean isEmptyAnswer(String guessNumber) {
+        return guessNumber == null;
+    }
+
+    private static boolean isDuplicatedNumber(String guessNumber) {
         return guessNumber.charAt(0) == guessNumber.charAt(1)
                 || guessNumber.charAt(0) == guessNumber.charAt(2)
                 || guessNumber.charAt(1) == guessNumber.charAt(2);

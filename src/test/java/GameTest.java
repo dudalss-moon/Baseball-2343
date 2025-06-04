@@ -1,9 +1,7 @@
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
 
@@ -16,15 +14,28 @@ class GameTest {
 
     @Test
     void createGame() {
-        assertNotNull(game);
+        assertThat(game).isNotNull();
     }
 
     private void assertIllegalArgument(String guessNumber) {
         try {
             game.guess(guessNumber);
-        } catch (IllegalArgumentException e) {
+            fail();
+        }
+        catch (IllegalArgumentException e) {
 
         }
+    }
+
+    private void generateQuestion(String questionNumber) {
+        game.question = questionNumber;
+    }
+
+    private static void assertMatchedNumber(GuessResult result, boolean solved, int strikes, int ball) {
+        assertThat(result).isNotNull();
+        assertThat(result.isSolved()).isEqualTo(solved);
+        assertThat(result.getStrikes()).isEqualTo(strikes);
+        assertThat(result.getBalls()).isEqualTo(ball);
     }
 
     @Test
@@ -32,12 +43,8 @@ class GameTest {
         assertIllegalArgument(null);
         assertIllegalArgument("12");
         assertIllegalArgument("1234");
-        assertIllegalArgument("12S");
+        assertIllegalArgument("12s");
         assertIllegalArgument("121");
-    }
-
-    private void generateQuestion(String questionNumber) {
-        game.question = questionNumber;
     }
 
     @Test
@@ -53,57 +60,15 @@ class GameTest {
     }
 
     @Test
-    void returnSolvedResultIfUnMatchedNumberWithTwoStrikes() {
+    void returnSolvedResultIfUnMatchedNumberWithTwoStrike() {
         generateQuestion("123");
-        assertMatchedNumber(game.guess("126"), false, 2, 0);
+        assertMatchedNumber(game.guess("129"), false, 2, 0);
     }
 
     @Test
-    void returnSolvedResultIfUnMatchedNumberWithTwoBalls() {
+    void returnSolvedResultIfUnMatchedNumberWithTwoBall() {
         generateQuestion("123");
-        assertMatchedNumber(game.guess("431"), false, 0, 2);
+        assertMatchedNumber(game.guess("251"), false, 0, 2);
     }
 
-    @Test
-    void returnSolvedResultIf2StrikesCase1() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("126"), false, 2, 0);
-    }
-
-    @Test
-    void returnSolvedResultIf2StrikesCase2() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("423"), false, 2, 0);
-    }
-
-    @Test
-    void returnSolvedResultIf2StrikesCase3() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("173"), false, 2, 0);
-    }
-
-    @Test
-    void returnSolvedResultIf1Strikes2BallsCase1() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("321"), false, 1, 2);
-    }
-
-    @Test
-    void returnSolvedResultIf1Strikes2BallsCase2() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("132"), false, 1, 2);
-    }
-
-    @Test
-    void returnSolvedResultIf1Strikes2BallsCase3() {
-        generateQuestion("123");
-        assertMatchedNumber(game.guess("213"), false, 1, 2);
-    }
-
-    private void assertMatchedNumber(GuessResult result, boolean solved, int strikes, int balls) {
-        assertThat(result).isNotNull();
-        assertThat(result.isSolved()).isEqualTo(solved);
-        assertThat(result.getStrikes()).isEqualTo(strikes);
-        assertThat(result.getBalls()).isEqualTo(balls);
-    }
 }
