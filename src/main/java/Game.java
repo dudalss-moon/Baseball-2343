@@ -5,32 +5,40 @@ public class Game {
         assertIllegalArgument(guessNumber);
         if (guessNumber.equals(question)) {
             return new GuessResult(true, 3, 0);
-        } else if (is2Strike1Ball(guessNumber)) {
-            return new GuessResult(false, 2, 0);
-        } else if (is1Strike2Ball(guessNumber)) {
-            return new GuessResult(false, 1, 2);
         } else {
-            return new GuessResult(false, 0, 0);
+            int strikeCount = getStrikeCount(guessNumber);
+            int result = getBallCount(guessNumber);
+            return new GuessResult(false, strikeCount, result);
         }
     }
 
-    private boolean is1Strike2Ball(String guessNumber) {
-        return (is1Strike(guessNumber, 0) && guessNumber.charAt(1) == question.charAt(2) && guessNumber.charAt(2) == question.charAt(1))
-                || (is1Strike(guessNumber, 1) && guessNumber.charAt(0) == question.charAt(2) && guessNumber.charAt(2) == question.charAt(0))
-                || (is1Strike(guessNumber, 2) && guessNumber.charAt(0) == question.charAt(1) && guessNumber.charAt(1) == question.charAt(0));
+    private int getBallCount(String guessNumber) {
+        int ballCount = 0;
+        for (int index = 0; index < 3; index++) {
+            if (guessNumber.charAt(index) == question.charAt(index)) {
+                continue;
+            }
+            for (int i = 0; i < 3; i++) {
+                if (guessNumber.charAt(i) == question.charAt(index)) {
+                    ballCount++;
+                }
+            }
+        }
+        return ballCount;
     }
 
-    private boolean is2Strike1Ball(String guessNumber) {
-        return (is1Strike(guessNumber, 0)
-                && is1Strike(guessNumber, 1))
-                || (is1Strike(guessNumber, 0)
-                && is1Strike(guessNumber, 2)
-                || (is1Strike(guessNumber, 1)
-                && is1Strike(guessNumber, 2)));
+    private int getStrikeCount(String guessNumber) {
+        int strikeCount = 0;
+        for (int index = 0; index < 3; index++) {
+            if (guessNumber.charAt(index) == question.charAt(index)) {
+                strikeCount++;
+            }
+        }
+        return strikeCount;
     }
 
-    private boolean is1Strike(String guessNumber, int ch) {
-        return guessNumber.charAt(ch) == question.charAt(ch);
+    private boolean is1Strike(String guessNumber, int index) {
+        return guessNumber.charAt(index) == question.charAt(index);
     }
 
     private void assertIllegalArgument(String guessNumber) {
@@ -42,15 +50,22 @@ public class Game {
             throw new IllegalArgumentException();
         }
 
-        for (char number : guessNumber.toCharArray()) {
-            if (number < '0' || number > '9') {
-                throw new IllegalArgumentException();
-            }
+        if (isIncludeCharacter(guessNumber)) {
+            throw new IllegalArgumentException();
         }
 
         if (isDuplicatedNumber(guessNumber)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private boolean isIncludeCharacter(String guessNumber) {
+        for (char number : guessNumber.toCharArray()) {
+            if (number < '0' || number > '9') {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isDuplicatedNumber(String guessNumber) {

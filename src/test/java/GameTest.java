@@ -53,6 +53,18 @@ class GameTest {
     }
 
     @Test
+    void returnSolvedResultIfUnMatchedNumberWithTwoStrikes() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("126"), false, 2, 0);
+    }
+
+    @Test
+    void returnSolvedResultIfUnMatchedNumberWithTwoBalls() {
+        generateQuestion("123");
+        assertMatchedNumber(game.guess("431"), false, 0, 2);
+    }
+
+    @Test
     void returnSolvedResultIf2StrikesCase1() {
         generateQuestion("123");
         assertMatchedNumber(game.guess("126"), false, 2, 0);
