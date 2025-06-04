@@ -53,9 +53,9 @@ class GameTest {
     }
 
     @Test
-    void returnSolvedResultIf2Strikes1Ball() {
+    void returnSolvedResultIf2Strikes() {
         generateQuestion("123");
-        assertMatchedNumber(game.guess("126"), false, 2, 1);
+        assertMatchedNumber(game.guess("126"), false, 2, 0);
     }
 
     private void assertMatchedNumber(GuessResult result, boolean solved, int strikes, int balls) {

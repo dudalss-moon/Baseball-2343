@@ -5,15 +5,24 @@ public class Game {
         assertIllegalArgument(guessNumber);
         if (guessNumber.equals(question)) {
             return new GuessResult(true, 3, 0);
-        } else if (
-                (guessNumber.charAt(0) == question.charAt(0)
-                        && guessNumber.charAt(1) == question.charAt(1))
-                        || (guessNumber.charAt(1) == question.charAt(1)
-                        && guessNumber.charAt(2) == question.charAt(2))) {
-            return new GuessResult(false, 2, 1);
+        } else if (is2Strike1Ball(guessNumber)) {
+            return new GuessResult(false, 2, 0);
         } else {
             return new GuessResult(false, 0, 0);
         }
+    }
+
+    private boolean is2Strike1Ball(String guessNumber) {
+        return (is1Strike(guessNumber, 0)
+                && is1Strike(guessNumber, 1))
+                || (is1Strike(guessNumber, 0)
+                && is1Strike(guessNumber, 2)
+                || (is1Strike(guessNumber, 1)
+                && is1Strike(guessNumber, 2)));
+    }
+
+    private boolean is1Strike(String guessNumber, int ch) {
+        return guessNumber.charAt(ch) == question.charAt(ch);
     }
 
     private void assertIllegalArgument(String guessNumber) {
